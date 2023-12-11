@@ -16,11 +16,16 @@ type Config struct {
 
 type AppConfig struct {
 	Name string `mapstructure:"name"`
+	Mode string `mapstructure:"mode"`
 	Port int    `mapstructure:"port"`
 }
 
 type LogConfig struct {
-	Level string `mapstructure:"level"`
+	Level      string `mapstructure:"level"`
+	Filename   string `mapstructure:"filename"`
+	MaxSize    int    `mapstructure:"max_size"`
+	MaxBackups int    `mapstructure:"max_backups"`
+	MaxAge     int    `mapstructure:"max_age"`
 }
 
 type MySQLConfig struct {
@@ -43,7 +48,7 @@ var Conf Config
 var ErrInvalidConfigFilename = fmt.Errorf("invalid config filename, config filename must be in format of <name>.<type>")
 var ErrUnsupportedConfigType = fmt.Errorf("unsupported config type, supported config types are: toml, json, yaml, hcl, ini")
 
-func InitConfig(filename string) (err error) {
+func Init(filename string) (err error) {
 	parts := strings.Split(filename, ".")
 	if len(parts) != 2 {
 		return ErrInvalidConfigFilename

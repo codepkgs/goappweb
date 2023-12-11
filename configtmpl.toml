@@ -1,9 +1,14 @@
 [app]
 name = "webapp"
+mode = "release"
 port = 8080
 
 [log]
 level = "debug"
+filename = "server.log"
+max_size = "200"
+max_backups = 3
+max_age = 7
 
 [mysql]
 host = "127.0.0.1"
