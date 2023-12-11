@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// 配置文件初始化
-	if err := settings.InitConfig("config.ini"); err != nil {
+	if err := settings.InitConfig("config.toml"); err != nil {
 		log.Fatalf("init settings failed! %v\n", err)
 	} else {
 		fmt.Println("init settings success!")
