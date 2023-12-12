@@ -16,9 +16,12 @@ port = 3306
 user = "username"
 password = "password"
 database = "database"
+max_open_conns = 50
+max_idle_conns = 30
 
 [redis]
 host = "127.0.0.1"
 port = 6379
 database = 0
 password = "password"
+pool_size = 30

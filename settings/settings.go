@@ -29,18 +29,22 @@ type LogConfig struct {
 }
 
 type MySQLConfig struct {
-	Host     string `mapstructure:"host"`
-	Port     int    `mapstructure:"port"`
-	User     string `mapstructure:"user"`
-	Password string `mapstructure:"password"`
-	Database string `mapstructure:"database"`
+	Host         string `mapstructure:"host"`
+	Port         int    `mapstructure:"port"`
+	User         string `mapstructure:"user"`
+	Password     string `mapstructure:"password"`
+	Database     string `mapstructure:"database"`
+	MaxOpenConns string `mapstructure:"max_open_conns"`
+	MaxIdleConns string `mapstructure:"max_idle_conns"`
 }
 
 type RedisConfig struct {
 	Host     string `mapstructure:"host"`
 	Port     int    `mapstructure:"port"`
 	Database int    `mapstructure:"database"`
+	Username string `mapstructure:"username"`
 	Password string `mapstructure:"password"`
+	PoolSize int    `mapstructure:"pool_size"`
 }
 
 var Conf Config
