@@ -11,6 +11,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/x-hezhang/gowebapp/app/index"
+
 	"go.uber.org/zap"
 
 	"github.com/x-hezhang/gowebapp/routes"
@@ -27,15 +29,17 @@ import (
 // Go Web较通用的脚手架模板
 
 func main() {
+	configFilename := "config.toml"
+
 	// 配置初始化
-	if err := settings.Init("config.toml"); err != nil {
+	if err := settings.Init(configFilename); err != nil {
 		log.Fatalf("init settings failed! %v\n", err)
 	} else {
 		fmt.Println("init settings success!")
 	}
 
 	// 日志初始化
-	if err := logger.Init(); err != nil {
+	if err := logger.Init(settings.Conf.LogConfig); err != nil {
 		log.Fatalf("init logger failed! %v\n", err)
 	} else {
 		fmt.Println("init logger success!")
@@ -44,7 +48,7 @@ func main() {
 	defer func() { _ = zap.L().Sync() }()
 
 	// MySQL初始化
-	if err := mysql.Init(); err != nil {
+	if err := mysql.Init(settings.Conf.MySQLConfig); err != nil {
 		log.Fatalf("init database failed! %v\n", err)
 	} else {
 		fmt.Println("init database success!")
@@ -53,7 +57,7 @@ func main() {
 	defer mysql.Close()
 
 	// Redis初始化
-	if err := redis.Init(); err != nil {
+	if err := redis.Init(settings.Conf.RedisConfig); err != nil {
 		log.Fatalf("init redis failed! %v\n", err)
 	} else {
 		fmt.Println("init redis success!")
@@ -63,7 +67,16 @@ func main() {
 
 	// 注册路由
 	r := routes.Init()
-	routes.RegisterMiddleware(r, logger.GinLogger(), logger.GinRecovery(true))
+	routes.RegisterMiddlewares(
+		r,
+		logger.GinLogger(),
+		logger.GinRecovery(true),
+	)
+
+	v1 := r.Group("/api/v1")
+	v2 := r.Group("/api/v2")
+	routes.RegisterRoutes(index.Routes, v1)
+	routes.RegisterRoutes(index.Routes, v2)
 
 	// 服务启动和优雅关闭
 	srv := http.Server{

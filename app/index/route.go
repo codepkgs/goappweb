@@ -1,11 +1,10 @@
 package index
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
-type Routes struct {
-	R *gin.Engine
-}
-
-func (i *Routes) Register() {
-	i.R.GET("/", indexHandler())
+func Routes(rg *gin.RouterGroup) {
+	index := rg.Group("/index")
+	index.GET("/", HomeHandler)
 }

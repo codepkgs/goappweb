@@ -4,20 +4,17 @@ import (
 	"fmt"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/x-hezhang/gowebapp/settings"
 )
 
 var db *sqlx.DB
 
-func Init() (err error) {
+func Init(cfg *settings.MySQLConfig) (err error) {
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True",
-		settings.Conf.MySQLConfig.User,
-		settings.Conf.MySQLConfig.Password,
-		settings.Conf.MySQLConfig.Host,
-		settings.Conf.MySQLConfig.Port,
-		settings.Conf.MySQLConfig.Database,
+		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database,
 	)
 	db, err = sqlx.Connect("mysql", dsn)
 	if err != nil {

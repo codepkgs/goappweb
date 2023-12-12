@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -28,21 +29,45 @@ func getJsonEncoder() zapcore.Encoder {
 	return zapcore.NewJSONEncoder(encoder)
 }
 
-func getFileWriterSyncer() zapcore.WriteSyncer {
+func getConsoleEncoder() zapcore.Encoder {
+	encoder := zap.NewProductionEncoderConfig()
+	encoder.TimeKey = "time"
+	encoder.MessageKey = "message"
+	encoder.EncodeTime = zapcore.RFC3339TimeEncoder
+	encoder.EncodeLevel = zapcore.LowercaseLevelEncoder
+	encoder.EncodeCaller = zapcore.ShortCallerEncoder
+	encoder.EncodeDuration = zapcore.SecondsDurationEncoder
+
+	return zapcore.NewConsoleEncoder(encoder)
+}
+
+func getFileWriterSyncer(cfg *settings.LogConfig) zapcore.WriteSyncer {
 	return zapcore.AddSync(&lumberjack.Logger{
-		Filename:   settings.Conf.LogConfig.Filename,
-		MaxSize:    settings.Conf.LogConfig.MaxSize,
-		MaxBackups: settings.Conf.LogConfig.MaxBackups,
-		MaxAge:     settings.Conf.LogConfig.MaxAge,
+		Filename:   cfg.Filename,
+		MaxSize:    cfg.MaxSize,
+		MaxBackups: cfg.MaxBackups,
+		MaxAge:     cfg.MaxAge,
 	})
 }
 
-func Init() (err error) {
-	level, err := zapcore.ParseLevel(settings.Conf.LogConfig.Level)
+var ErrUnsupportedOutput = fmt.Errorf("unsupported logger output, supported outputs: file, stdout")
+
+func Init(cfg *settings.LogConfig) (err error) {
+	level, err := zapcore.ParseLevel(cfg.Level)
 	if err != nil {
 		return
 	}
-	core := zapcore.NewCore(getJsonEncoder(), getFileWriterSyncer(), level)
+
+	var core zapcore.Core
+	switch cfg.Output {
+	case "file":
+		core = zapcore.NewCore(getJsonEncoder(), getFileWriterSyncer(cfg), level)
+	case "stdout":
+		core = zapcore.NewCore(getConsoleEncoder(), zapcore.AddSync(os.Stdout), level)
+	default:
+		return ErrUnsupportedOutput
+	}
+
 	lg := zap.New(core)
 	zap.ReplaceGlobals(lg)
 	return nil
