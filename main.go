@@ -37,14 +37,14 @@ func main() {
 	if err := settings.Init(configFilename); err != nil {
 		log.Fatalf("init settings failed! %v\n", err)
 	} else {
-		fmt.Println("init settings success!")
+		log.Println("init settings success!")
 	}
 
 	// 日志初始化
 	if err := logger.Init(settings.Conf.LogConfig); err != nil {
 		log.Fatalf("init logger failed! %v\n", err)
 	} else {
-		fmt.Println("init logger success!")
+		log.Println("init logger success!")
 	}
 
 	defer func() { _ = zap.L().Sync() }()
@@ -53,7 +53,7 @@ func main() {
 	if err := mysql.Init(settings.Conf.MySQLConfig); err != nil {
 		log.Fatalf("init database failed! %v\n", err)
 	} else {
-		fmt.Println("init database success!")
+		log.Println("init database success!")
 	}
 
 	defer mysql.Close()
@@ -62,7 +62,7 @@ func main() {
 	if err := redis.Init(settings.Conf.RedisConfig); err != nil {
 		log.Fatalf("init redis failed! %v\n", err)
 	} else {
-		fmt.Println("init redis success!")
+		log.Println("init redis success!")
 	}
 
 	defer redis.Close()

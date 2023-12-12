@@ -2,7 +2,6 @@ package settings
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/fsnotify/fsnotify"
 
@@ -52,30 +51,9 @@ type RedisConfig struct {
 
 var Conf Config
 
-var ErrInvalidConfigFilename = fmt.Errorf("invalid config filename, config filename must be in format of <name>.<type>")
-var ErrUnsupportedConfigType = fmt.Errorf("unsupported config type, supported config types are: toml, json, yaml, hcl, ini")
-
 func Init(filename string) (err error) {
-	parts := strings.Split(filename, ".")
-	if len(parts) != 2 {
-		return ErrInvalidConfigFilename
-	}
-
-	configName := parts[0]
-	configType := parts[1]
-
-	switch configType {
-	case "toml", "json", "yaml", "yml", "hcl", "ini":
-	default:
-		return ErrUnsupportedConfigType
-	}
-
 	v := viper.New()
 	v.SetConfigFile(filename)
-	v.SetConfigName(configName)
-	v.SetConfigType(configType)
-	v.AddConfigPath(".")
-	v.AddConfigPath("./config")
 
 	if err = v.ReadInConfig(); err != nil {
 		return err

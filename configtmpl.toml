@@ -1,6 +1,6 @@
 [app]
 name = "webapp"
-mode = "release"
+mode = "debug"
 port = 8080
 
 [log]
