@@ -31,10 +31,11 @@ import (
 // Go Web较通用的脚手架模板
 
 func main() {
-	configFilename := "config.toml"
+	// 解析用户指定的配置文件
+	configPath := settings.Parse()
 
 	// 配置初始化
-	if err := settings.Init(configFilename); err != nil {
+	if err := settings.Init(configPath); err != nil {
 		log.Fatalf("init settings failed! %v\n", err)
 	} else {
 		log.Println("init settings success!")
