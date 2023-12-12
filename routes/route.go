@@ -16,6 +16,8 @@ func Init() *gin.Engine {
 
 type Register func(r *gin.RouterGroup)
 
-func RegisterRoutes(register Register, rg *gin.RouterGroup) {
-	register(rg)
+func RegisterRoutes(rg *gin.RouterGroup, registers ...Register) {
+	for _, register := range registers {
+		register(rg)
+	}
 }

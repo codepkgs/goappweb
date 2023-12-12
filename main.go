@@ -82,9 +82,7 @@ func main() {
 
 	// 注册路由
 	v1 := r.Group("/api/v1")
-	v2 := r.Group("/api/v2")
-	routes.RegisterRoutes(index.Routes, v1)
-	routes.RegisterRoutes(index.Routes, v2)
+	routes.RegisterRoutes(v1, index.Routes)
 
 	// 服务启动和优雅关闭
 	srv := http.Server{
