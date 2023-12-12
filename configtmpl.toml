@@ -7,7 +7,7 @@ port = 8080
 level = "debug"
 output = "stdout"
 filename = "server.log"
-max_size = "200"
+max_size = 200
 max_backups = 3
 max_age = 7
 
