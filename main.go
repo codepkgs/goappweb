@@ -11,6 +11,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/x-hezhang/gowebapp/app/index"
 
 	"go.uber.org/zap"
@@ -65,14 +67,20 @@ func main() {
 
 	defer redis.Close()
 
-	// 注册路由
+	// 设置运行模式
+	gin.SetMode(settings.Conf.AppConfig.Mode)
+
+	// 路由初始化
 	r := routes.Init()
+
+	// 注册中间件
 	routes.RegisterMiddlewares(
 		r,
 		logger.GinLogger(),
 		logger.GinRecovery(true),
 	)
 
+	// 注册路由
 	v1 := r.Group("/api/v1")
 	v2 := r.Group("/api/v2")
 	routes.RegisterRoutes(index.Routes, v1)
