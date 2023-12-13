@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -36,36 +35,29 @@ func main() {
 
 	// 配置初始化
 	if err := settings.Init(configPath); err != nil {
-		log.Fatalf("init settings failed! %v\n", err)
-	} else {
-		log.Println("init settings success!")
+		fmt.Printf("init settings failed! %v\n", err)
+		return
 	}
 
 	// 日志初始化
 	if err := logger.Init(settings.Conf.LogConfig); err != nil {
-		log.Fatalf("init logger failed! %v\n", err)
-	} else {
-		log.Println("init logger success!")
+		fmt.Printf("init logger failed! %v\n", err)
+		return
 	}
-
 	defer func() { _ = zap.L().Sync() }()
 
 	// MySQL初始化
 	if err := mysql.Init(settings.Conf.MySQLConfig); err != nil {
-		log.Fatalf("init database failed! %v\n", err)
-	} else {
-		log.Println("init database success!")
+		fmt.Printf("init database failed! %v\n", err)
+		return
 	}
-
 	defer mysql.Close()
 
 	// Redis初始化
 	if err := redis.Init(settings.Conf.RedisConfig); err != nil {
-		log.Fatalf("init redis failed! %v\n", err)
-	} else {
-		log.Println("init redis success!")
+		fmt.Printf("init redis failed! %v\n", err)
+		return
 	}
-
 	defer redis.Close()
 
 	// 设置运行模式
