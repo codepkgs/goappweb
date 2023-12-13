@@ -3,6 +3,10 @@ name = "webapp"
 mode = "debug"
 port = 8080
 
+[snowflake]
+start_time = "2023-01-13"
+machine_id = 1
+
 [log]
 level = "debug"
 output = "stdout"

@@ -10,6 +10,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/x-hezhang/gowebapp/utils/i18n"
+	"github.com/x-hezhang/gowebapp/utils/snowflake"
+
+	"github.com/x-hezhang/gowebapp/utils/logger"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/x-hezhang/gowebapp/app/index"
@@ -21,8 +26,6 @@ import (
 	"github.com/x-hezhang/gowebapp/dao/redis"
 
 	"github.com/x-hezhang/gowebapp/dao/mysql"
-
-	"github.com/x-hezhang/gowebapp/logger"
 
 	"github.com/x-hezhang/gowebapp/settings"
 )
@@ -59,6 +62,18 @@ func main() {
 		return
 	}
 	defer redis.Close()
+
+	// 雪花算法初始化
+	if err := snowflake.Init(settings.Conf.SnowflakeConfig); err != nil {
+		fmt.Printf("init snowflake failed! %v\n", err)
+		return
+	}
+
+	// 注册翻译器
+	if err := i18n.InitTrans("zh"); err != nil {
+		fmt.Printf("init validator translator failed! %v\n", err)
+		return
+	}
 
 	// 设置运行模式
 	gin.SetMode(settings.Conf.AppConfig.Mode)

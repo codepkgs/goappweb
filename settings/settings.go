@@ -9,16 +9,22 @@ import (
 )
 
 type Config struct {
-	*AppConfig   `mapstructure:"app"`
-	*LogConfig   `mapstructure:"log"`
-	*MySQLConfig `mapstructure:"mysql"`
-	*RedisConfig `mapstructure:"redis"`
+	*AppConfig       `mapstructure:"app"`
+	*LogConfig       `mapstructure:"log"`
+	*MySQLConfig     `mapstructure:"mysql"`
+	*RedisConfig     `mapstructure:"redis"`
+	*SnowflakeConfig `mapstructure:"snowflake"`
 }
 
 type AppConfig struct {
 	Name string `mapstructure:"name"`
 	Mode string `mapstructure:"mode"`
 	Port int    `mapstructure:"port"`
+}
+
+type SnowflakeConfig struct {
+	StartTime string `mapstructure:"start_time"`
+	MachineId int64  `mapstructure:"machine_id"`
 }
 
 type LogConfig struct {
