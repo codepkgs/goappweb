@@ -3,9 +3,8 @@ package snowflake
 import (
 	"time"
 
-	"github.com/x-hezhang/gowebapp/settings"
-
 	sf "github.com/bwmarrin/snowflake"
+	"github.com/x-hezhang/gowebapp/settings"
 )
 
 var node *sf.Node
